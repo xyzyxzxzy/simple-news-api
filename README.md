@@ -13,3 +13,4 @@
     bin/console d:d:c - creating db
     bin/console d:m:m - migration
     bin/console d:f:l - load fixtures
+    composer i
