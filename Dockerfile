@@ -4,7 +4,7 @@ RUN apt-get update -y && apt-get install -y libmcrypt-dev libjpeg62-turbo-dev li
     libjpeg-dev libfreetype6-dev libzip-dev libicu-dev
 RUN apt-get update && \
     apt-get install -y zlib1g-dev && \
-    apt-get unzip
+    apt-get install unzip
 
 RUN apt update && apt install -y git
 RUN docker-php-ext-install pdo mbstring pdo_mysql zip && \

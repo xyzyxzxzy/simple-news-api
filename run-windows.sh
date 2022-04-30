@@ -3,7 +3,7 @@ PWD=$(pwd)
 NAME=$(cat $PWD/dockerName)
 IMAGENAME=$(cat $PWD/name)
 
-docker run -it \
+winpty docker run -it \
     -p 8000:8000 \
     --rm \
     --network dev \
