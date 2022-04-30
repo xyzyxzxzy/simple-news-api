@@ -5,7 +5,7 @@
 - Install and run Docker:
     1. Run `docker network create --driver=bridge dev`
 - Install and configure mysql
-    1. Run mysql on network the `dev`
+    1. Run mysql in network `dev`
 - Configure connect to db in .env
 - Run `build.sh` and then `run.sh` or for windows `run-windows.sh` in project folder
 - Run `docker exec -it news-ratio.dock bash`
