@@ -6,7 +6,6 @@ use App\Entity\News;
 use App\Repository\NewsRepository;
 use Exception;
 use Symfony\Component\Validator\Constraints\Collection;
-use Symfony\Component\Validator\Exception\ValidatorException;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints as Assert;
 
