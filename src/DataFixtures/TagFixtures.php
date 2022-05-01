@@ -17,7 +17,8 @@ class TagFixtures extends Fixture
     ];
 
     /**
-     *  фикстуры тегов
+     * Фикстуры тегов
+     * @return void
      */
     public function load(ObjectManager $manager): void
     {

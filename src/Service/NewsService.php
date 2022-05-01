@@ -5,7 +5,6 @@ namespace App\Service;
 use App\Entity\News;
 use App\Repository\NewsRepository;
 use Exception;
-use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -22,11 +21,11 @@ class NewsService
 
     /**
      * Ограничения валидации
-     * @return Collection
+     * @return Assert\Collection
      */
-    private function getConstraints(): Collection
+    private function getConstraints(): Assert\Collection
     {   
-        return new Collection([
+        return new Assert\Collection([
             'tagIds' => [
                 new Assert\Optional([
                     new Assert\Type([

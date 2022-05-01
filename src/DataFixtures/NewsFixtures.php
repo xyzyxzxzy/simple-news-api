@@ -74,7 +74,8 @@ class NewsFixtures extends Fixture implements DependentFixtureInterface
     ];
 
     /**
-     * фикстуры новостей
+     * Фикстуры новостей
+     * @return void 
      */
     public function load(
         ObjectManager $manager
