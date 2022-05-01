@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\News;
 use App\Repository\NewsRepository;
+use Exception;
 use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\Validator\Exception\ValidatorException;
 use Symfony\Component\Validator\Validation;
@@ -27,39 +28,57 @@ class NewsService
     private function getConstraints(): Collection
     {   
         return new Collection([
+            'tagIds' => [
+                new Assert\Optional([
+                    new Assert\Type([
+                        'type' => "array",
+                        'message' => 'Должно быть типа массив',
+                        
+                    ]),
+                    new Assert\All([
+                        new Assert\Type([
+                            'type' => "integer",
+                            'message' => 'Должно быть целое чило'
+                        ]),
+                        new Assert\Positive([
+                            'message' => 'Элементы массива должны быть больше 0'
+                        ])
+                    ])
+                ])
+            ],
             'dateFilter' => [
-                new Assert\Optional(
+                new Assert\Optional([
+                    new Assert\Type([
+                        'type' => "string",
+                        'message' => 'Должно быть строкой'
+                    ]),
                     new Assert\DateTime([
                         'format' => "d-m-Y",
                         'message' => 'Используйте d-m-Y формат!'
                     ])
-                ),
+                ]),
             ],
             'pg' => [
-                new Assert\Optional(
-                    [
-                        new Assert\Type([
-                            'type' => "integer",
-                            'message' => 'Должно быть целое чило'
-                        ]),
-                        new Assert\Positive([
-                            'message' => 'Число должно быть больше 0'
-                        ])
-                    ]
-                )
+                new Assert\Optional([
+                    new Assert\Type([
+                        'type' => "integer",
+                        'message' => 'Должно быть целое чило'
+                    ]),
+                    new Assert\Positive([
+                        'message' => 'Число должно быть больше 0'
+                    ])
+                ])
             ],
             'on' => [
-                new Assert\Optional(
-                    [
-                        new Assert\Type([
-                            'type' => "integer",
-                            'message' => 'Должно быть целое чило'
-                        ]),
-                        new Assert\Positive([
-                            'message' => 'Число должно быть больше 0'
-                        ])
-                    ]
-                )
+                new Assert\Optional([
+                    new Assert\Type([
+                        'type' => "integer",
+                        'message' => 'Должно быть целое чило'
+                    ]),
+                    new Assert\Positive([
+                        'message' => 'Число должно быть больше 0'
+                    ])
+                ])
             ]
         ]);
     }
@@ -75,8 +94,15 @@ class NewsService
     {   
         $validator = Validation::createValidator();
         $violations = $validator->validate($data, $this->getConstraints());
+
         if (count($violations) > 0) {
-            throw new ValidatorException($violations);
+            $errors = [];
+            foreach ($violations as $key => $violation) {
+                if ($key % 2 === 0) {
+                    $errors[preg_replace('/[[\]\][0-9]+/', '', $violation->getPropertyPath())] = $violation->getMessage();
+                }
+            }
+            throw new Exception(serialize($errors), 400);
         }
     }
     

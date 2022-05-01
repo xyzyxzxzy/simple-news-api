@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\News;
 use App\Service\NewsService;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,23 +27,34 @@ class NewsController extends AbstractController
         NewsService $newsService
     ): Response
     {
-        $pg = $request->query->getInt('pg', $this->getParameter('app.pg'));
-        $on = $request->query->getInt('on', $this->getParameter('app.on'));
-        /**
-         * @var string format: d-m-Y
-         */
-        $dateFilter = $request->query->get('dateFilter', null);
         /**
          * @var array
          */
-        $tagIds = (array) $request->query->get('tagIds', []);
+        $content = $request->toArray();
+        try {
+            $newsService->requestValidation($content);
+        } catch(Exception $e) {
+            return $this->json([
+                "error" => unserialize($e->getMessage())
+            ], $e->getCode());
+        }
 
-        $newsService->requestValidation(array_merge(
-            $request->query->all(), [
-                'pg' => $pg,
-                'on' => $on
-            ]
-        ));
+        /**
+         * @var int
+         */
+        $pg = $content['pg'] ?? $this->getParameter('app.pg');
+        /**
+         * @var int
+         */
+        $on = $content['on'] ?? $this->getParameter('app.on');
+        /**
+         * @var string format: d-m-Y
+         */
+        $dateFilter = $content['dateFilter'] ?? null;
+        /**
+         * @var array
+         */
+        $tagIds = $content['tagIds'] ?? [];
 
         return $this->json([
             'list' => $newsService->getNews($pg, $on, $dateFilter, $tagIds)
