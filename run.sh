@@ -8,6 +8,7 @@ docker run -it \
     --rm \
     --network dev \
     -v /$PWD:/app \
+    --hostname $NAME \
     --name $NAME $IMAGENAME $@
 
 exit 0
