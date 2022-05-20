@@ -7,7 +7,7 @@
 - Install and configure mysql:
     1. Run mysql in network `dev`
 - Configure connect to db in .env
-- Run `build.sh` and then `run.sh` or for windows `run-windows.sh` in project folder
+- Run `build.sh` and then `run.sh` in project folder
 - Run `docker exec -it news-ratio.dock bash`
     ```bash
     composer i
