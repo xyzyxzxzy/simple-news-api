@@ -6,9 +6,9 @@
     1. Run `docker network create --driver=bridge dev`
 - Install and configure mysql:
     1. Run mysql in network `dev`
-- Configure connect to db in .env
+- Create `.env.local` file and configure connect to db (example can be obtained from `.env` file)
 - Run `build.sh` and then `run.sh` in project folder
-- Run `docker exec -it news-ratio.dock bash`
+- Run `docker exec -it news.dock bash`
     ```bash
     composer i
     bin/console d:d:c - creating db
