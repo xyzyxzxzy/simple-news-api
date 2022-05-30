@@ -46,4 +46,20 @@ class TagRepository extends ServiceEntityRepository
             $this->_em->flush();
         }
     }
+
+     /**
+     * Получить список тегов
+     * @param int $pg
+     * @param int $on
+     * @return array
+     */
+    public function getTags(int $pg, int $on): array
+    {
+        $query = $this->createQueryBuilder('t')
+            ->setFirstResult($on * ($pg - 1))
+            ->setMaxResults($on)
+            ->orderBy('t.id', 'ASC');
+
+        return $query->getQuery()->getResult();
+    }
 }

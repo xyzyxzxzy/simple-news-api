@@ -2,11 +2,9 @@
 
 namespace App\Service;
 
-use Exception;
 use App\Entity\News;
+use App\Entity\Tag;
 use App\Repository\NewsRepository;
-use App\Serializer\Normalizer\TagNormalizer;
-use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
@@ -15,24 +13,24 @@ class NewsService
 {
     private $newsRepository;
     private $normalizer;
-    private $tagNormalizer;
+    private $tagService;
 
     public function __construct(
         NewsRepository $newsRepository,
         NormalizerInterface $normalizer,
-        TagNormalizer $tagNormalizer
+        TagService $tagService
     ) 
     {
         $this->newsRepository = $newsRepository;
         $this->normalizer = $normalizer;
-        $this->tagNormalizer = $tagNormalizer;
+        $this->tagService = $tagService;
     }
 
     /**
      * Ограничения валидации
      * @return Assert\Collection
      */
-    private function getConstraints(): Assert\Collection
+    public function getConstraints(): Assert\Collection
     {   
         return new Assert\Collection([
             'tagIds' => [
@@ -89,29 +87,6 @@ class NewsService
             ]
         ]);
     }
-
-    /**
-     * Валидация запроса
-     * @var Request $data
-     * @return void
-     */
-    public function requestValidation(
-        $data
-    ): void
-    {   
-        $validator = Validation::createValidator();
-        $violations = $validator->validate($data, $this->getConstraints());
-
-        if (count($violations) > 0) {
-            $errors = [];
-            foreach ($violations as $key => $violation) {
-                if ($key % 2 === 0) {
-                    $errors[preg_replace('/[[\]\][0-9]+/', '', $violation->getPropertyPath())] = $violation->getMessage();
-                }
-            }
-            throw new Exception(serialize($errors), 400);
-        }
-    }
     
     /**
      * Получить новости
@@ -143,7 +118,9 @@ class NewsService
         return $this->normalizer->normalize($news, null, [
             AbstractObjectNormalizer::CALLBACKS => [
                 'tag' => function($object) {
-                    return $this->tagNormalizer->normalize($object);
+                    return array_map(function (Tag $tag) {
+                        return $this->tagService->tagNormalizer($tag);
+                    }, $object->getValues());
                 }
             ]
         ]);

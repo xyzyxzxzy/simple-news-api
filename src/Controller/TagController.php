@@ -3,8 +3,8 @@
 namespace App\Controller;
 
 use Exception;
-use App\Entity\News;
-use App\Service\NewsService;
+use App\Entity\Tag;
+use App\Service\TagService;
 use App\Service\ValidationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,21 +12,20 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @Route("/news", name="news")
+ * @Route("/tag", name="tag")
  */
-class NewsController extends AbstractController
+class TagController extends AbstractController
 {
     /**
-     * Получить новости
-     * @Route("/", name="news", methods={"GET"})
+     * Получить теги
+     * @Route("/", name="tags", methods={"GET"})
      * @param Request $request,
-     * @param NewsService $newsService
-     * @param ValidationService $validationService
+     * @param TagService $tagService
      * @return Response
      */
-    public function news(
+    public function tags(
         Request $request,
-        NewsService $newsService,
+        TagService $tagService,
         ValidationService $validationService
     ): Response
     {
@@ -35,7 +34,7 @@ class NewsController extends AbstractController
          */
         $content = json_decode($request->getContent(), true);
         try {
-            $validationService->requestValidation($content, $newsService->getConstraints());
+            $validationService->requestValidation($content, $tagService->getConstraints());
         } catch(Exception $e) {
             return $this->json([
                 "error" => unserialize($e->getMessage())
@@ -50,37 +49,29 @@ class NewsController extends AbstractController
          * @var int
          */
         $on = $content['on'] ?? $this->getParameter('app.on');
-        /**
-         * @var string format: d-m-Y
-         */
-        $dateFilter = $content['dateFilter'] ?? null;
-        /**
-         * @var array
-         */
-        $tagIds = $content['tagIds'] ?? [];
 
         return $this->json([
-            'list' => $newsService->getNews($pg, $on, $dateFilter, $tagIds)
+            'list' => $tagService->getTags($pg, $on)
         ]);
     }
     
     /**
-     * Получить новость
-     * @Route("/{news<\d+>}", name="one", methods={"GET"})
-     * @param News $news
+     * Получить тег
+     * @Route("/{tag<\d+>}", name="one", methods={"GET"})
+     * @param Tag $tag
      * @return Response
      */
     public function one(
-        ?News $news,
-        NewsService $newsService
+        ?Tag $tag,
+        TagService $tagService
     ): Response
     {
-        if (!$news) {
+        if (!$tag) {
             return $this->json([
-                'message' => 'Новость не найдена'
+                'message' => 'Тег не найден'
             ], 400);
         }
 
-        return $this->json($newsService->newsNormalizer($news));
+        return $this->json($tagService->tagNormalizer($tag));
     }
 }
