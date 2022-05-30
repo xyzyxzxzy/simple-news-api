@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\NewsRepository;
 use DateTime;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\NewsRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
-use App\Model\NewsModel;
 
 /**
  * @ORM\Entity(repositoryClass=NewsRepository::class)
@@ -49,6 +49,7 @@ class News
 
     /**
      * @ORM\ManyToMany(targetEntity=Tag::class, inversedBy="news")
+     * @SerializedName("tags")
      */
     private $tag;
 
@@ -61,7 +62,6 @@ class News
     {
         $this->dateCreation = new DateTime();
         $this->tag = new ArrayCollection();
-        $this->tags = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -163,21 +163,5 @@ class News
         $this->slug = $slug;
 
         return $this;
-    }
-
-    public function serialize() {
-        $newsModel = new NewsModel();
-        $newsModel->setId($this->getId());
-        $newsModel->setName($this->getName());
-        $newsModel->setSlug($this->getSlug());
-        $newsModel->setContent($this->getContent());
-        $newsModel->setPreview($this->getPreview());
-        $newsModel->setDateCreation($this->getDateCreation());
-        $newsModel->setDatePublication($this->getDatePublication());
-        $newsModel->setTags($this->getTag()->map(function($tag) {
-            return $tag->serialize();
-        }));
-
-        return $newsModel->toArray();
     }
 }

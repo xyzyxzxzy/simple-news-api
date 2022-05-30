@@ -2,9 +2,9 @@
 
 namespace App\Controller;
 
+use Exception;
 use App\Entity\News;
 use App\Service\NewsService;
-use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -68,7 +68,8 @@ class NewsController extends AbstractController
      * @return Response
      */
     public function one(
-        ?News $news
+        ?News $news,
+        NewsService $newsService
     ): Response
     {
         if (!$news) {
@@ -77,6 +78,6 @@ class NewsController extends AbstractController
             ], 400);
         }
 
-        return $this->json($news->serialize());
+        return $this->json($newsService->newsNormalizer($news));
     }
 }

@@ -2,15 +2,10 @@
 
 namespace App\Entity;
 
-use App\Model\TagModel;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Serializer;
-
-use App\Repository\TagRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\TagRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 
 /**
@@ -82,13 +77,5 @@ class Tag
         }
 
         return $this;
-    }
-
-    public function serialize() {
-        $tagModel = new TagModel();
-        $tagModel->setId($this->getId());
-        $tagModel->setName($this->getName());
-        
-        return $tagModel->toArray();
     }
 }
