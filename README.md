@@ -11,6 +11,7 @@
 - Run `docker exec -it news.dock bash`
     ```bash
     composer i
+    bin/console lexik:jwt:generate-keypair - generate the SSL keys
     bin/console d:d:c - creating db
     bin/console d:m:m - migration
     bin/console d:f:l - load fixtures
