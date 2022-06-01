@@ -21,6 +21,7 @@ class TagController extends AbstractController
      * @Route("/", name="tags", methods={"GET"})
      * @param Request $request,
      * @param TagService $tagService
+     * @param ValidationService $validationService
      * @return Response
      */
     public function tags(
@@ -59,6 +60,7 @@ class TagController extends AbstractController
      * Получить тег
      * @Route("/{tag<\d+>}", name="one", methods={"GET"})
      * @param Tag $tag
+     * @param TagService $tagService
      * @return Response
      */
     public function one(

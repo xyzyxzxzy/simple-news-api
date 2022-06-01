@@ -4,12 +4,14 @@ namespace App\Service;
 
 use Exception;
 use Symfony\Component\Validator\Validation;
+use Symfony\Component\Validator\Constraints\Collection;
 
 class ValidationService 
 {
     /**
      * Валидация запроса
      * @var Request $data
+     * @var Collection $constraints
      * @return void
      */
     public function requestValidation(
