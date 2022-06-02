@@ -5,7 +5,7 @@ namespace App\Controller;
 use Exception;
 use App\Entity\News;
 use App\Service\NewsService;
-use App\Service\ValidationService;
+use App\Validator\NewsDataRequestValidator;
 use App\Serializer\Normalizer\NewsNormalizer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,21 +22,21 @@ class NewsController extends AbstractController
      * @Route("/", name="news", methods={"GET"})
      * @param Request $request,
      * @param NewsService $newsService
-     * @param ValidationService $validationService
+     * @param NewsDataRequestValidator $newsDataRequestValidator
      * @return Response
      */
     public function news(
         Request $request,
         NewsService $newsService,
-        ValidationService $validationService
+        NewsDataRequestValidator $newsDataRequestValidator
     ): Response
     {
         /**
          * @var array
          */
-        $content = json_decode($request->getContent(), true);
+        $content = json_decode($request->getContent(), true) ?? [];
         try {
-            $validationService->requestValidation($content, $newsService->getConstraints());
+            $newsDataRequestValidator->validation($content);
         } catch(Exception $e) {
             return $this->json([
                 "error" => unserialize($e->getMessage())

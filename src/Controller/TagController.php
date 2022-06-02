@@ -5,7 +5,7 @@ namespace App\Controller;
 use Exception;
 use App\Entity\Tag;
 use App\Service\TagService;
-use App\Service\ValidationService;
+use App\Validator\TagDataRequestValidator;
 use App\Serializer\Normalizer\TagNormalizer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,21 +22,21 @@ class TagController extends AbstractController
      * @Route("/", name="tags", methods={"GET"})
      * @param Request $request,
      * @param TagService $tagService
-     * @param ValidationService $validationService
+     * @param TagDataRequestValidator $tagDataRequestValidator
      * @return Response
      */
     public function tags(
         Request $request,
         TagService $tagService,
-        ValidationService $validationService
+        TagDataRequestValidator $tagDataRequestValidator
     ): Response
     {
         /**
          * @var array
          */
-        $content = json_decode($request->getContent(), true);
+        $content = json_decode($request->getContent(), true) ?? [];
         try {
-            $validationService->requestValidation($content, $tagService->getConstraints());
+            $tagDataRequestValidator->validation($content);
         } catch(Exception $e) {
             return $this->json([
                 "error" => unserialize($e->getMessage())
