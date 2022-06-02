@@ -10,6 +10,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
+use Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter;
 
 class TagNormalizer implements NormalizerInterface
 {
@@ -25,9 +26,13 @@ class TagNormalizer implements NormalizerInterface
                 new AnnotationReader()
             )
         );
+        $metadataAwareNameConverter = new MetadataAwareNameConverter($classMetadataFactory);
 
         $serializer = new Serializer([
-            new ObjectNormalizer($classMetadataFactory)
+            new ObjectNormalizer(
+                $classMetadataFactory,
+                $metadataAwareNameConverter
+            )
         ]);
 
         return $serializer->normalize($object, $format, array_unique($context, SORT_REGULAR));
