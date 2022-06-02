@@ -6,10 +6,11 @@ use Exception;
 use App\Entity\News;
 use App\Service\NewsService;
 use App\Service\ValidationService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Serializer\Normalizer\NewsNormalizer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * @Route("/news", name="news")
@@ -72,7 +73,7 @@ class NewsController extends AbstractController
      */
     public function one(
         ?News $news,
-        NewsService $newsService
+        NewsNormalizer $newsNormalizer
     ): Response
     {
         if (!$news) {
@@ -81,6 +82,6 @@ class NewsController extends AbstractController
             ], 400);
         }
 
-        return $this->json($newsService->newsNormalizer($news));
+        return $this->json($newsNormalizer->normalize($news));
     }
 }

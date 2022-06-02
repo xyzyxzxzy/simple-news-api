@@ -65,18 +65,7 @@ class TagService
         int $on
     ): array {
         return array_map(function(Tag $tag) {
-            return $this->tagNormalizer($tag);
+            return $this->tagNormalizer->normalize($tag);
         }, $this->tagRepository->getTags($pg, $on));
-    }
-
-    /**
-     * Нормалайзер тега
-     * @param Tag $tag
-     * @return array
-     */
-    public function tagNormalizer (
-        Tag $tag
-    ): array{
-        return $this->tagNormalizer->normalize($tag);
     }
 }

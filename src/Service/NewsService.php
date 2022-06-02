@@ -3,27 +3,22 @@
 namespace App\Service;
 
 use App\Entity\News;
-use App\Entity\Tag;
 use App\Repository\NewsRepository;
+use App\Serializer\Normalizer\NewsNormalizer;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 
 class NewsService 
 {
     private $newsRepository;
-    private $normalizer;
-    private $tagService;
+    private $newsNormalizer;
 
     public function __construct(
         NewsRepository $newsRepository,
-        NormalizerInterface $normalizer,
-        TagService $tagService
+        NewsNormalizer $newsNormalizer
     ) 
     {
         $this->newsRepository = $newsRepository;
-        $this->normalizer = $normalizer;
-        $this->tagService = $tagService;
+        $this->newsNormalizer = $newsNormalizer;
     }
 
     /**
@@ -103,26 +98,7 @@ class NewsService
         array $tagIds
     ): array {
         return array_map(function(News $news) {
-            return $this->newsNormalizer($news);
+            return $this->newsNormalizer->normalize($news);
         }, $this->newsRepository->getNews($pg, $on, $dateFilter, $tagIds));
-    }
-
-    /**
-     * Нормалайзер новости
-     * @param News $news
-     * @return array
-     */
-    public function newsNormalizer (
-        News $news
-    ): array{
-        return $this->normalizer->normalize($news, null, [
-            AbstractObjectNormalizer::CALLBACKS => [
-                'tag' => function($object) {
-                    return array_map(function (Tag $tag) {
-                        return $this->tagService->tagNormalizer($tag);
-                    }, $object->getValues());
-                }
-            ]
-        ]);
     }
 }

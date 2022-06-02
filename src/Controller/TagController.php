@@ -6,10 +6,11 @@ use Exception;
 use App\Entity\Tag;
 use App\Service\TagService;
 use App\Service\ValidationService;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Serializer\Normalizer\TagNormalizer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * @Route("/tag", name="tag")
@@ -65,7 +66,7 @@ class TagController extends AbstractController
      */
     public function one(
         ?Tag $tag,
-        TagService $tagService
+        TagNormalizer $tagNormalizer
     ): Response
     {
         if (!$tag) {
@@ -74,6 +75,6 @@ class TagController extends AbstractController
             ], 400);
         }
 
-        return $this->json($tagService->tagNormalizer($tag));
+        return $this->json($tagNormalizer->normalize($tag));
     }
 }
