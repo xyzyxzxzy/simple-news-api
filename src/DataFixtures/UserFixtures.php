@@ -29,6 +29,10 @@ class UserFixtures extends Fixture
         $this->passwordHasher = $passwordHasher;    
     }
 
+    /**
+     * Фикстуры пользователей
+     * @return void
+     */
     public function load(ObjectManager $manager): void
     {
         foreach (self::USERS_LIST as $user) {
