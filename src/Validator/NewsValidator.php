@@ -38,8 +38,7 @@ class NewsValidator extends AbstractDataRequestValidation
                 ],
                 'preview' => [
                     new Assert\NotBlank([
-                        'message' => 'Это поле не должно быть пустым',
-
+                        'message' => 'Это поле не должно быть пустым'
                     ]),
                     new Assert\Type([
                         'type' => 'string',
