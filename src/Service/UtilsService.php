@@ -24,7 +24,7 @@ class UtilsService
     public function recursiveRemoveDir($dir)
     {
         if (!file_exists($dir)) {
-            return true;
+            return;
         }
 
         $includes = new \FilesystemIterator($dir);
