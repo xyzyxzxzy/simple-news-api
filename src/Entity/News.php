@@ -15,6 +15,10 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
  */
 class News
 {
+    const PATH_TO_SAVE = '/uploads/news/';
+    const PREVIEW_WIDTH = 400;
+    const PREVIEW_HEIGHT = 400;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -54,7 +58,7 @@ class News
     private $tag;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $slug;
 

@@ -19,13 +19,13 @@ class NewsController extends AbstractController
 {
     /**
      * Получить новости
-     * @Route("/", name="news", methods={"GET"})
+     * @Route("/", name="list", methods={"GET"})
      * @param Request $request,
      * @param NewsService $newsService
      * @param NewsFilterValidator $newsFilterValidator
      * @return Response
      */
-    public function news(
+    public function list(
         Request $request,
         NewsService $newsService,
         NewsFilterValidator $newsFilterValidator
@@ -67,11 +67,11 @@ class NewsController extends AbstractController
     
     /**
      * Получить новость
-     * @Route("/{news<\d+>}", name="one", methods={"GET"})
+     * @Route("/{news<\d+>}", name="item", methods={"GET"})
      * @param News $news
      * @return Response
      */
-    public function one(
+    public function item(
         ?News $news,
         NewsNormalizer $newsNormalizer
     ): Response
@@ -79,7 +79,7 @@ class NewsController extends AbstractController
         if (!$news) {
             return $this->json([
                 'message' => 'Новость не найдена'
-            ], 400);
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         return $this->json($newsNormalizer->normalize($news));

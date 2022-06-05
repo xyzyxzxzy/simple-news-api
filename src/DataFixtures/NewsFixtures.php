@@ -111,7 +111,7 @@ class NewsFixtures extends Fixture implements DependentFixtureInterface
         int $newsId
     ): string {
         $rootDir = $this->parameterBag->get('kernel.project_dir');
-        $pathToSave = '/uploads/news/' . $newsId . '/';
+        $pathToSave = News::PATH_TO_SAVE . $newsId . '/';
         
         if (!file_exists($rootDir . $pathToSave)) {
             mkdir($rootDir . $pathToSave, 0777, true);
@@ -119,7 +119,7 @@ class NewsFixtures extends Fixture implements DependentFixtureInterface
 
         $image = new \abeautifulsite\SimpleImage('https://picsum.photos/400/400?random=' . rand(2, 10));
         $image
-            ->resize(400, 400)
+            ->resize(News::PREVIEW_WIDTH, News::PREVIEW_HEIGHT)
             ->save($rootDir . $pathToSave . 'preview.jpg', 'image/jpg');
         
         return $pathToSave . 'preview.jpg';

@@ -19,13 +19,13 @@ class TagController extends AbstractController
 {
     /**
      * Получить теги
-     * @Route("/", name="tags", methods={"GET"})
+     * @Route("/", name="list", methods={"GET"})
      * @param Request $request,
      * @param TagService $tagService
      * @param TagFilterValidator $tagFilterValidator
      * @return Response
      */
-    public function tags(
+    public function list(
         Request $request,
         TagService $tagService,
         TagFilterValidator $tagFilterValidator
@@ -59,12 +59,12 @@ class TagController extends AbstractController
     
     /**
      * Получить тег
-     * @Route("/{tag<\d+>}", name="one", methods={"GET"})
+     * @Route("/{tag<\d+>}", name="item", methods={"GET"})
      * @param Tag $tag
      * @param TagService $tagService
      * @return Response
      */
-    public function one(
+    public function item(
         ?Tag $tag,
         TagNormalizer $tagNormalizer
     ): Response
@@ -72,7 +72,7 @@ class TagController extends AbstractController
         if (!$tag) {
             return $this->json([
                 'message' => 'Тег не найден'
-            ], 400);
+            ], Response::HTTP_BAD_REQUEST);
         }
 
         return $this->json($tagNormalizer->normalize($tag));
