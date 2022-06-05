@@ -45,7 +45,7 @@ class NewsService
      * @param array $tagIds
      * @return array
      */
-    public function getNews(
+    public function get(
         int $pg,
         int $on,
         string $dateFilter = null,
@@ -61,7 +61,7 @@ class NewsService
      * @param array $data
      * @return int
      */
-    public function setNews(
+    public function create(
         array $data
     ): int {
         /**
@@ -122,7 +122,7 @@ class NewsService
      * @param array $data
      * @return int
      */
-    public function editNews(
+    public function update(
         News $news,
         array $data
     ): int {
@@ -192,7 +192,7 @@ class NewsService
      * @param News $news
      * @return void
      */
-    public function deleteNews(
+    public function delete(
         News $news
     ): void {
         /**

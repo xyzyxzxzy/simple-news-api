@@ -3,31 +3,31 @@
 namespace App\Controller\Admin;
 
 use Exception;
-use App\Entity\News;
-use App\Service\NewsService;
-use App\Validator\NewsValidator;
+use App\Entity\Tag;
+use App\Service\TagService;
+use App\Validator\TagValidator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
- * @Route("/admin/news", name="news")
+ * @Route("/admin/tag", name="tag")
  */
-class NewsController extends AbstractController
+class TagController extends AbstractController
 {
     /**
-     * Добавить новость
+     * Добавить тег
      * @Route("/", name="create", methods={"POST"})
      * @param Request $request,
-     * @param NewsService $newsService
-     * @param NewsValidator $newsValidator
+     * @param TagService $tagService
+     * @param TagValidator $tagValidator
      * @return Response
      */
     public function create(
         Request $request,
-        NewsService $newsService,
-        NewsValidator $newsValidator
+        TagService $tagService,
+        TagValidator $tagValidator
     ): Response
     {
         /**
@@ -35,7 +35,7 @@ class NewsController extends AbstractController
          */
         $content = json_decode($request->getContent(), true) ?? [];
         try {
-            $newsValidator->validation($content);
+            $tagValidator->validation($content);
         } catch(Exception $e) {
             return $this->json([
                 "error" => unserialize($e->getMessage())
@@ -43,29 +43,29 @@ class NewsController extends AbstractController
         }
 
         return $this->json([
-            'id' => $newsService->create($content)
+            'id' => $tagService->create($content)
         ], Response::HTTP_CREATED);
     }
 
     /**
-     * Редактировать новость
-     * @Route("/{news<\d+>}", name="update", methods={"PATCH"})
-     * @param News $news,
+     * Редактировать тег
+     * @Route("/{tag<\d+>}", name="update", methods={"PATCH"})
+     * @param Tag $tag,
      * @param Request $request,
-     * @param NewsService $newsService
-     * @param NewsValidator $newsValidator
+     * @param TagService $tagService
+     * @param TagValidator $tagValidator
      * @return Response
      */
     public function update(
-        ?News $news,
+        ?Tag $tag,
         Request $request,
-        NewsService $newsService,
-        NewsValidator $newsValidator
+        TagService $tagService,
+        TagValidator $tagValidator
     ): Response
     {
-        if (!$news) {
+        if (!$tag) {
             return $this->json([
-                'message' => 'Новость не найдена'
+                'message' => 'Тег не найден'
             ], Response::HTTP_BAD_REQUEST);
         }
 
@@ -74,9 +74,7 @@ class NewsController extends AbstractController
          */
         $content = json_decode($request->getContent(), true) ?? [];
         try {
-            $newsValidator->validation($content, [
-                'allowMissingFields' => true
-            ]);
+            $tagValidator->validation($content);
         } catch(Exception $e) {
             return $this->json([
                 "error" => unserialize($e->getMessage())
@@ -84,39 +82,34 @@ class NewsController extends AbstractController
         }
 
         return $this->json([
-            'id' => $newsService->update(
-                $news,
+            'id' => $tagService->update(
+                $tag,
                 $content
             )
         ], Response::HTTP_OK);
     }
     
     /**
-     * Удалить новость
-     * @Route("/{news<\d+>}", name="delete", methods={"DELETE"})
-     * @param News $news
-     * @param NewsService $newsService
+     * Удалить тег
+     * @Route("/{tag<\d+>}", name="delete", methods={"DELETE"})
+     * @param Tag $tag
+     * @param TagService $tagService
      * @return Response
      */
     public function delete(
-        ?News $news,
-        NewsService $newsService
+        ?Tag $tag,
+        TagService $tagService
     ): Response
     {
-        if (!$news) {
+        if (!$tag) {
             return $this->json([
-                'message' => 'Новость не найдена'
+                'message' => 'Тег не найден'
             ], Response::HTTP_BAD_REQUEST);
         }
-
-        try {
-            $newsService->delete($news);
-        } catch(Exception $e) {
-            return $this->json([
-                "error" => $e->getMessage()
-            ], $e->getCode());
-        }
-
-        return $this->json(null, Response::HTTP_NO_CONTENT);
+        
+        return $this->json(
+            $tagService->delete($tag),
+            Response::HTTP_NO_CONTENT
+        );
     }
 }

@@ -53,7 +53,7 @@ class TagController extends AbstractController
         $on = $content['on'] ?? $this->getParameter('app.on');
 
         return $this->json([
-            'list' => $tagService->getTags($pg, $on)
+            'list' => $tagService->get($pg, $on)
         ]);
     }
     

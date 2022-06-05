@@ -61,7 +61,7 @@ class NewsController extends AbstractController
         $tagIds = $content['tagIds'] ?? [];
 
         return $this->json([
-            'list' => $newsService->getNews($pg, $on, $dateFilter, $tagIds)
+            'list' => $newsService->get($pg, $on, $dateFilter, $tagIds)
         ]);
     }
     
