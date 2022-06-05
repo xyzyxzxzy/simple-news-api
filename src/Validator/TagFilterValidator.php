@@ -1,10 +1,18 @@
 <?php
+
 namespace App\Validator;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class TagDataRequestValidator extends AbstractDataRequestValidation {
-    public function validation(array $data) {
+class TagFilterValidator extends AbstractDataRequestValidation
+{
+    /**
+     * Валидатор полей фильтра тегов
+     * @param array $data
+     * @return void
+     */
+    public function validation(array $data)
+    {
         $constraints = new Assert\Collection([
             'pg' => [
                 new Assert\Optional([
@@ -29,7 +37,7 @@ class TagDataRequestValidator extends AbstractDataRequestValidation {
                 ])
             ]
         ]);
-    
+
         $this->validate($data, $constraints);
     }
 }

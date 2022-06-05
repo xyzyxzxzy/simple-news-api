@@ -1,16 +1,33 @@
 <?php
+
 namespace App\Validator;
 
 use Exception;
 use Symfony\Component\Validator\Constraint;
-use Symfony\Component\Validator\Validation;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 abstract class AbstractDataRequestValidation
 {
-    public function validate($data, Constraint $constraint)
+    /**
+     * @ValidatorInterface $validator
+     */
+    private $validator;
+
+    public function __construct(
+        ValidatorInterface $validator
+    ) {
+        $this->validator = $validator;
+    }
+
+    /**
+     * Валидация полей
+     * @param array $data
+     * @param Constraint $constraint
+     * @return void
+     */
+    public function validate($data, Constraint $constraint): void
     {
-        $validator = Validation::createValidator();
-        $violations = $validator->validate($data, $constraint);
+        $violations = $this->validator->validate($data, $constraint);
 
         if (count($violations) > 0) {
             $errors = [];
