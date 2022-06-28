@@ -42,6 +42,10 @@ class NewsController extends AbstractController
             ], $e->getCode());
         }
 
+        $content += [
+            'user' => $this->getUser()
+        ];
+
         return $this->json([
             'id' => $newsService->create($content)
         ], Response::HTTP_CREATED);

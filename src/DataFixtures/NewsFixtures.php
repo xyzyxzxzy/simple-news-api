@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use DateTime;
 use App\Entity\News;
+use App\Entity\User;
 use App\Repository\TagRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 
@@ -89,6 +90,12 @@ class NewsFixtures extends Fixture implements DependentFixtureInterface
             $newNews->setSlug($this->slugger->slug($news['title'])->lower());
             $newNews->setContent($news['content'] . ' ' . $index);
             $newNews->setDatePublication(new DateTime('now'));
+            $newNews->setAuthor($manager
+                ->getRepository(User::class)
+                ->findOneBy([
+                    'email' => 'admin'
+                ])
+            );
             
             foreach ($tags as $tag) {
                 $newNews->addTag($tag);
@@ -128,7 +135,8 @@ class NewsFixtures extends Fixture implements DependentFixtureInterface
     public function getDependencies()
     {
         return [
-            TagFixtures::class,
+            UserFixtures::class,
+            TagFixtures::class
         ];
     }
 }

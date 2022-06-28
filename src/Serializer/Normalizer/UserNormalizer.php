@@ -2,44 +2,28 @@
 
 namespace App\Serializer\Normalizer;
 
-use App\Entity\Tag;
-use App\Entity\News;
+use App\Entity\User;
 use Symfony\Component\Serializer\Serializer;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
-use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter;
+use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 
-class NewsNormalizer implements NormalizerInterface
+class UserNormalizer implements NormalizerInterface
 {
-    private $tagNormalizer;
-
-    public function __construct(
-        TagNormalizer $tagNormalizer,
-        UserNormalizer $userNormalizer
-    )
-    {
-        $this->tagNormalizer = $tagNormalizer;
-        $this->userNormalizer = $userNormalizer;
-    }
-
     public function normalize($object, $format = null, array $context = array())
     {
         $defaultContext = [
-            AbstractObjectNormalizer::CALLBACKS => [
-                'tag' => fn ($object) => array_map(fn (Tag $tag) =>
-                    $this->tagNormalizer->normalize($tag), $object->getValues()
-                ),
-                'author' => fn ($object) => $this->userNormalizer->normalize($object)
-            ],
-            DateTimeNormalizer::FORMAT_KEY => 'Y-m-d'
+            AbstractObjectNormalizer::ATTRIBUTES => [
+                'id',
+                'email'
+            ]
         ];
         $context += $defaultContext;
-
+        
         $classMetadataFactory = new ClassMetadataFactory(
             new AnnotationLoader(
                 new AnnotationReader()
@@ -48,7 +32,6 @@ class NewsNormalizer implements NormalizerInterface
         $metadataAwareNameConverter = new MetadataAwareNameConverter($classMetadataFactory);
 
         $serializer = new Serializer([
-            new DateTimeNormalizer(),
             new ObjectNormalizer(
                 $classMetadataFactory,
                 $metadataAwareNameConverter
@@ -60,6 +43,6 @@ class NewsNormalizer implements NormalizerInterface
 
     public function supportsNormalization($data, $format = null)
     {
-        return $data instanceof News;
+        return $data instanceof User;
     }
 }

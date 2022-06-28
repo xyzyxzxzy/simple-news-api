@@ -5,6 +5,7 @@ namespace App\Service;
 use Exception;
 use App\Entity\Tag;
 use App\Entity\News;
+use App\Entity\User;
 use App\Repository\NewsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Serializer\Normalizer\NewsNormalizer;
@@ -84,10 +85,18 @@ class NewsService
          */
         $tags = $data['tagIds'];
 
+        /**
+         * Автор новости
+         * 
+         * @var User
+         */
+        $user = $data['user'];
+
         $news = new News;
         $news->setName($name);
         $news->setContent($content);
         $news->setDatePublication(new \DateTime('now'));
+        $news->setAuthor($user);
 
         foreach ($tags as $tag) {
             $news->addTag(
