@@ -4,12 +4,15 @@ namespace App\Controller;
 
 use Exception;
 use App\Entity\News;
+use App\Entity\User;
 use App\Service\NewsService;
 use App\Validator\NewsFilterValidator;
 use App\Serializer\Normalizer\NewsNormalizer;
+use App\Serializer\Normalizer\UserNormalizer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
@@ -83,5 +86,88 @@ class NewsController extends AbstractController
         }
 
         return $this->json($newsNormalizer->normalize($news));
+    }
+
+    /**
+     * Поставить лайк
+     * @IsGranted("ROLE_USER")
+     * @Route("/like/{news<\d+>}", name="like", methods={"POST"})
+     * @param News $news
+     * @return Response
+     */
+    public function like(
+        ?News $news,
+        NewsService $newsService
+    ): Response
+    {
+        if (!$news) {
+            return $this->json([
+                'message' => 'Новость не найдена'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            $newsService->setLike(
+                $news,
+                $this->getUser()
+            );
+        } catch(Exception $e) {
+            return $this->json([
+                "error" => $e->getMessage()
+            ], $e->getCode());
+        }
+
+        return $this->json([
+            'message' => 'Лайк успешно поставлен'
+        ], Response::HTTP_CREATED);
+    }
+
+    /**
+     * Удалить лайк
+     * @IsGranted("ROLE_USER")
+     * @Route("/like/{news<\d+>}", name="dislike", methods={"DELETE"})
+     * @param News $news
+     * @return Response
+     */
+    public function dislike(
+        ?News $news,
+        NewsService $newsService
+    ): Response
+    {
+        if (!$news) {
+            return $this->json([
+                'message' => 'Новость не найдена'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        return $this->json($newsService->removeLike(
+            $news,
+            $this->getUser()
+        ), Response::HTTP_NO_CONTENT);
+    }
+
+     /**
+     * Пользователи, которым понравилась новость
+     * @Route("/likes/{news<\d+>}", name="likes", methods={"GET"})
+     * @param News $news
+     * @return Response
+     */
+    public function likes(
+        ?News $news,
+        UserNormalizer $userNormalizer
+    ): Response
+    {
+        if (!$news) {
+            return $this->json([
+                'message' => 'Новость не найдена'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        return $this->json([
+            'list' => array_map(
+                fn (User $user) => $userNormalizer->normalize($user),
+                $news->getLikes()->getValues()
+            )
+        ]);
     }
 }

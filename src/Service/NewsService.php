@@ -243,4 +243,49 @@ class NewsService
 
         return $pathToSave . 'preview.jpg';
     }
+
+    /**
+     * Поставить лайк
+     * @param News $news
+     * @param User $user
+     * @return void
+     */
+    public function setLike(
+        News $news,
+        User $user
+    ): void {
+        $likedNews = $this
+            ->em
+            ->getRepository(News::class)
+            ->getLike($news, $user);
+        
+        if (!is_null($likedNews)) {
+            throw new Exception("Вы уже поставили лайк", Response::HTTP_BAD_REQUEST);
+        }
+
+        $news->addLike($user);
+        $this->em->flush();
+    }
+
+    /**
+     * Удалить лайк
+     * @param News $news
+     * @param User $user
+     * @return void
+     */
+    public function removeLike(
+        News $news,
+        User $user
+    ): void {
+        $likedNews = $this
+            ->em
+            ->getRepository(News::class)
+            ->getLike($news, $user);
+        
+        if (!is_null($likedNews)) {
+            $likedNews->removeLike($user);
+            $this->em->persist($likedNews);
+            $this->em->flush();
+        }
+    }
 }

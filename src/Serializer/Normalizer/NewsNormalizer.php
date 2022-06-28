@@ -4,6 +4,7 @@ namespace App\Serializer\Normalizer;
 
 use App\Entity\Tag;
 use App\Entity\News;
+use App\Entity\User;
 use Symfony\Component\Serializer\Serializer;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
@@ -34,7 +35,10 @@ class NewsNormalizer implements NormalizerInterface
                 'tag' => fn ($object) => array_map(fn (Tag $tag) =>
                     $this->tagNormalizer->normalize($tag), $object->getValues()
                 ),
-                'author' => fn ($object) => $this->userNormalizer->normalize($object)
+                'author' => fn ($object) => $this->userNormalizer->normalize($object),
+                'likes' => fn ($object) => array_map(fn (User $user) =>
+                    $this->userNormalizer->normalize($user), $object->getValues()
+                )
             ],
             DateTimeNormalizer::FORMAT_KEY => 'Y-m-d'
         ];

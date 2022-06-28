@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\News;
+use App\Entity\User;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
@@ -78,5 +79,25 @@ class NewsRepository extends ServiceEntityRepository
         }
 
         return $query->getQuery()->getResult();
+    }
+    
+    /**
+     * Поставлен ли лайк пользователем для текущей новости
+     * @param News $news
+     * @param User $user
+     * @return News|null
+     */
+    public function getLike(News $news, User $user)
+    {
+        $query = $this->createQueryBuilder('n')
+            ->innerJoin('n.likes', 'l')
+            ->where('l.id = :userId')
+            ->andWhere('n.id = :newsId')
+            ->setParameters([
+                'newsId' => $news->getId(),
+                'userId' => $user->getId()
+            ]);
+
+        return $query->getQuery()->getOneOrNullResult();
     }
 }
