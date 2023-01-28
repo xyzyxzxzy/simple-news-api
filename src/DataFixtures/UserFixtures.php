@@ -11,11 +11,11 @@ class UserFixtures extends Fixture
 {
     const USERS_LIST = [
         array(
-            'username' => 'admin',
-            'roles' => ["ROLE_ADMIN"]   
+            'username' => "admin",
+            'roles' => ["ROLE_ADMIN"]
         ),
         array(
-            'username' => 'user',
+            'username' => "user",
             'roles' => []   
         ),
     ];
@@ -45,8 +45,8 @@ class UserFixtures extends Fixture
             }
 
             $manager->persist($newUser);
+            $manager->flush();
         }
 
-        $manager->flush();
     }
 }
