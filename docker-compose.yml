@@ -1,0 +1,34 @@
+version: '3.8'
+
+networks:
+  dev:
+    name: dev
+    driver: bridge
+
+services:
+  news.dock:
+    container_name: news.dock
+    build:
+      context: ./docker
+    ports:
+      - '8000:8000'
+    volumes:
+      - ./:/var/www/app
+    networks:
+      - dev
+    depends_on:
+      - dev
+  dev:
+    container_name: dev_db.dock
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: "root"
+      POSTGRES_PASSWORD: "root"
+      POSTGRES_DB: "dev"
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./var/postgres-data:/var/lib/postgresql/data
+    networks:
+      - dev

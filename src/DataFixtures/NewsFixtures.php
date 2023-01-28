@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use claviska\SimpleImage;
 use DateTime;
 use App\Entity\News;
 use App\Entity\User;
@@ -23,7 +24,7 @@ class NewsFixtures extends Fixture implements DependentFixtureInterface
     public function __construct(
         SluggerInterface $slugger,
         ParameterBagInterface $parameterBag,
-        TagRepository $tagRepository
+        TagRepository $tagRepository,
     )
     {
         $this->slugger = $slugger;
@@ -124,10 +125,10 @@ class NewsFixtures extends Fixture implements DependentFixtureInterface
             mkdir($rootDir . $pathToSave, 0777, true);
         }
 
-        $image = new \abeautifulsite\SimpleImage('https://picsum.photos/400/400?random=' . rand(2, 10));
+        $image = new SimpleImage('https://source.unsplash.com/collection/928423/400x400');
         $image
             ->resize(News::PREVIEW_WIDTH, News::PREVIEW_HEIGHT)
-            ->save($rootDir . $pathToSave . 'preview.jpg', 'image/jpg');
+            ->toFile($rootDir . $pathToSave . 'preview.jpg');
         
         return $pathToSave . 'preview.jpg';
     }
