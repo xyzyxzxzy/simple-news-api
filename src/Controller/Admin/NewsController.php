@@ -11,28 +11,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-/**
- * @Route("/admin/news", name="news")
- */
+#[Route(path: '/admin/news', name: 'news')]
 class NewsController extends AbstractController
 {
-    /**
-     * Добавить новость
-     * @Route("/", name="create", methods={"POST"})
-     * @param Request $request,
-     * @param NewsService $newsService
-     * @param NewsValidator $newsValidator
-     * @return Response
-     */
+    #[Route(path: '/', name: 'create', methods: ['POST'])]
     public function create(
         Request $request,
         NewsService $newsService,
         NewsValidator $newsValidator
     ): Response
     {
-        /**
-         * @var array
-         */
         $content = json_decode($request->getContent(), true) ?? [];
         try {
             $newsValidator->validation($content);
@@ -51,15 +39,7 @@ class NewsController extends AbstractController
         ], Response::HTTP_CREATED);
     }
 
-    /**
-     * Редактировать новость
-     * @Route("/{news<\d+>}", name="update", methods={"PATCH"})
-     * @param News $news,
-     * @param Request $request,
-     * @param NewsService $newsService
-     * @param NewsValidator $newsValidator
-     * @return Response
-     */
+    #[Route(path: '/{news<\d+>}', name: 'update', methods: ['PATCH'])]
     public function update(
         ?News $news,
         Request $request,
@@ -73,9 +53,6 @@ class NewsController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        /**
-         * @var array
-         */
         $content = json_decode($request->getContent(), true) ?? [];
         try {
             $newsValidator->validation($content, [
@@ -94,14 +71,8 @@ class NewsController extends AbstractController
             )
         ], Response::HTTP_OK);
     }
-    
-    /**
-     * Удалить новость
-     * @Route("/{news<\d+>}", name="delete", methods={"DELETE"})
-     * @param News $news
-     * @param NewsService $newsService
-     * @return Response
-     */
+
+    #[Route(path: '/{news<\d+>}', name: 'delete', methods: ['DELETE'])]
     public function delete(
         ?News $news,
         NewsService $newsService

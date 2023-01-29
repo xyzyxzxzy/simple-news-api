@@ -15,28 +15,16 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-/**
- * @Route("/news", name="news")
- */
+#[Route(path: '/news', name: 'news')]
 class NewsController extends AbstractController
 {
-    /**
-     * Получить новости
-     * @Route("/", name="list", methods={"GET"})
-     * @param Request $request,
-     * @param NewsService $newsService
-     * @param NewsFilterValidator $newsFilterValidator
-     * @return Response
-     */
+    #[Route(path: '/', name: 'list', methods: ['GET'])]
     public function list(
         Request $request,
         NewsService $newsService,
         NewsFilterValidator $newsFilterValidator
     ): Response
     {
-        /**
-         * @var array
-         */
         $content = json_decode($request->getContent(), true) ?? [];
         try {
             $newsFilterValidator->validation($content);
@@ -46,34 +34,17 @@ class NewsController extends AbstractController
             ], $e->getCode());
         }
 
-        /**
-         * @var int
-         */
         $pg = $content['pg'] ?? $this->getParameter('app.pg');
-        /**
-         * @var int
-         */
         $on = $content['on'] ?? $this->getParameter('app.on');
-        /**
-         * @var string format: d-m-Y
-         */
         $dateFilter = $content['dateFilter'] ?? null;
-        /**
-         * @var array
-         */
         $tagIds = $content['tagIds'] ?? [];
 
         return $this->json([
             'list' => $newsService->get($pg, $on, $dateFilter, $tagIds)
         ]);
     }
-    
-    /**
-     * Получить новость
-     * @Route("/{news<\d+>}", name="item", methods={"GET"})
-     * @param News $news
-     * @return Response
-     */
+
+    #[Route(path: '/{news<\d+>}', name: 'item', methods: ['GET'])]
     public function item(
         ?News $news,
         NewsNormalizer $newsNormalizer
@@ -88,13 +59,7 @@ class NewsController extends AbstractController
         return $this->json($newsNormalizer->normalize($news));
     }
 
-    /**
-     * Поставить лайк
-     * @IsGranted("ROLE_USER")
-     * @Route("/like/{news<\d+>}", name="like", methods={"POST"})
-     * @param News $news
-     * @return Response
-     */
+    #[Route(path: '/like/{news<\d+>}', name: 'like', methods: ['POST'])]
     public function like(
         ?News $news,
         NewsService $newsService
@@ -122,13 +87,7 @@ class NewsController extends AbstractController
         ], Response::HTTP_CREATED);
     }
 
-    /**
-     * Удалить лайк
-     * @IsGranted("ROLE_USER")
-     * @Route("/like/{news<\d+>}", name="dislike", methods={"DELETE"})
-     * @param News $news
-     * @return Response
-     */
+    #[Route(path: '/like/{news<\d+>}', name: 'dislike', methods: ['DELETE'])]
     public function dislike(
         ?News $news,
         NewsService $newsService
@@ -146,12 +105,7 @@ class NewsController extends AbstractController
         ), Response::HTTP_NO_CONTENT);
     }
 
-     /**
-     * Пользователи, которым понравилась новость
-     * @Route("/likes/{news<\d+>}", name="likes", methods={"GET"})
-     * @param News $news
-     * @return Response
-     */
+    #[Route(path: '/likes/{news<\d+>}', name: 'likes', methods: ['GET'])]
     public function likes(
         ?News $news,
         UserNormalizer $userNormalizer

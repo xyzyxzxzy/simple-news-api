@@ -8,9 +8,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 abstract class AbstractDataRequestValidation
 {
-    /**
-     * @ValidatorInterface $validator
-     */
     private $validator;
 
     public function __construct(
@@ -19,12 +16,6 @@ abstract class AbstractDataRequestValidation
         $this->validator = $validator;
     }
 
-    /**
-     * Валидация полей
-     * @param array $data
-     * @param Constraint $constraint
-     * @return void
-     */
     public function validate($data, Constraint $constraint): void
     {
         $violations = $this->validator->validate($data, $constraint);

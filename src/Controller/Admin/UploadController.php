@@ -7,16 +7,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-/**
- * @Route("/admin/upload", name="upload")
- */
+#[Route(path: '/admin/upload', name: 'upload')]
 class UploadController extends AbstractController
 {
-    /**
-     * Загрузить файл
-     * @Route("/", name="upload", methods={"GET", "POST"})
-     * @return Response
-     */
+    #[Route(path: '/', name: 'upload', methods: ['GET', 'POST'])]
     public function upload(): Response
     {
         $tmpDirPath =  $this->getParameter('kernel.project_dir') . '/../tmp';

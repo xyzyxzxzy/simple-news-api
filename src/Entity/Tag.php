@@ -8,27 +8,19 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 
 
-/**
- * @ORM\Entity(repositoryClass=TagRepository::class)
- */
+#[ORM\Entity(repositoryClass: TagRepository::class)]
 class Tag
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private int $id;
 
-    /**
-     * @ORM\Column(type="string", length=100)
-     */
-    private $name;
+    #[ORM\Column(type: 'string', length: 100)]
+    private string $name;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=News::class, mappedBy="tag")
-     */
-    private $news;
+    #[ORM\ManyToMany(targetEntity: News::class, mappedBy: 'tag')]
+    private Collection $news;
 
     public function __construct()
     {
@@ -52,9 +44,6 @@ class Tag
         return $this;
     }
 
-    /**
-     * @return Collection<int, News>
-     */
     public function getNews(): Collection
     {
         return $this->news;

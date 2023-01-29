@@ -10,72 +10,49 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 
 
-/**
- * @ORM\Entity(repositoryClass=NewsRepository::class)
- */
+#[ORM\Entity(repositoryClass: NewsRepository::class)]
 class News
 {
     const PATH_TO_SAVE = '/uploads/news/';
     const PREVIEW_WIDTH = 400;
     const PREVIEW_HEIGHT = 400;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private int $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $name;
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $name;
 
-    /**
-     * @ORM\Column(type="text")
-     */
-    private $content;
+    #[ORM\Column(type: 'text')]
+    private string $content;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true))
-     */
-    private $preview;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private string $preview;
 
-    /**
-     * @ORM\Column(type="date")
-     */
-    private $dateCreation;
+    #[ORM\Column(type: 'date')]
+    private DateTime $dateCreation;
 
-    /**
-     * @ORM\Column(type="date", nullable=true)
-     */
-    private $datePublication;
+    #[ORM\Column(type: 'date', nullable: true)]
+    private DateTime $datePublication;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Tag::class, inversedBy="news")
-     * @SerializedName("tags")
-     */
-    private $tag;
+    #[SerializedName('tags')]
+    #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'news')]
+    private Collection $tag;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $slug;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private string $slug;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class)
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $author;
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private User $author;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=User::class)
-     * @ORM\JoinTable(name="news_user_likes",
-     *    joinColumns={@ORM\JoinColumn(unique=true, name="news_id", referencedColumnName="id")},
-     *    inverseJoinColumns={@ORM\JoinColumn(unique=true, name="user_id", referencedColumnName="id")}
-     * )
-     */
-    private $likes;
+    #[ORM\JoinTable(name: 'news_user_likes')]
+    #[ORM\JoinColumn(unique: true, name: 'news_id', referencedColumnName: 'id')]
+    #[ORM\InverseJoinColumn(unique: true, name: 'user_id', referencedColumnName: 'id')]
+    #[ORM\ManyToMany(targetEntity: User::class)]
+    private Collection $likes;
 
     public function __construct()
     {
@@ -125,33 +102,30 @@ class News
         return $this;
     }
 
-    public function getDateCreation(): ?\DateTimeInterface
+    public function getDateCreation(): DateTime
     {
         return $this->dateCreation;
     }
 
-    public function setDateCreation(\DateTimeInterface $dateCreation): self
+    public function setDateCreation(DateTime $dateCreation): self
     {
         $this->dateCreation = $dateCreation;
 
         return $this;
     }
 
-    public function getDatePublication(): ?\DateTimeInterface
+    public function getDatePublication(): ?DateTime
     {
         return $this->datePublication;
     }
 
-    public function setDatePublication(?\DateTimeInterface $datePublication): self
+    public function setDatePublication(DateTime $datePublication): self
     {
         $this->datePublication = $datePublication;
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, Tag>
-     */
     public function getTag(): Collection
     {
         return $this->tag;
@@ -197,9 +171,6 @@ class News
         return $this;
     }
 
-    /**
-     * @return Collection<int, User>
-     */
     public function getLikes(): Collection
     {
         return $this->likes;

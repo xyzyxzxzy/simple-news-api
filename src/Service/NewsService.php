@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use claviska\SimpleImage;
 use Exception;
 use App\Entity\Tag;
 use App\Entity\News;
@@ -38,58 +39,24 @@ class NewsService
         $this->utilsService = $utilsService;
     }
 
-    /**
-     * Получить новости
-     * @param int $pg
-     * @param int $on
-     * @param string|null $dataFilter
-     * @param array $tagIds
-     * @return array
-     */
     public function get(
         int $pg,
         int $on,
-        string $dateFilter = null,
-        array $tagIds
+        array $tagIds,
+        ?string $dateFilter
     ): array {
         return array_map(function (News $news) {
             return $this->newsNormalizer->normalize($news);
-        }, $this->newsRepository->getNews($pg, $on, $dateFilter, $tagIds));
+        }, $this->newsRepository->getNews($pg, $on, $tagIds, $dateFilter));
     }
 
-    /**
-     * Добавить новость
-     * @param array $data
-     * @return int
-     */
     public function create(
         array $data
     ): int {
-        /**
-         * @var string
-         */
         $name = $this->utilsService->convertString($data['name']);
-
-        /**
-         * @var string
-         */
         $preview = $data['preview'];
-
-        /**
-         * @var string
-         */
         $content = $this->utilsService->convertString($data['content']);
-
-        /**
-         * @var array
-         */
         $tags = $data['tagIds'];
-
-        /**
-         * Автор новости
-         * 
-         * @var User
-         */
         $user = $data['user'];
 
         $news = new News;
@@ -125,34 +92,13 @@ class NewsService
         return $news->getId();
     }
 
-    /**
-     * Редактировать новость
-     * @param News $news
-     * @param array $data
-     * @return int
-     */
     public function update(
         News $news,
         array $data
     ): int {
-        /**
-         * @var string
-         */
         $name = $this->utilsService->convertString($data['name'] ?? '');
-
-        /**
-         * @var string
-         */
         $preview = $data['preview'] ?? '';
-
-        /**
-         * @var string
-         */
         $content = $this->utilsService->convertString($data['content'] ?? '');
-
-        /**
-         * @var array
-         */
         $tags = $data['tagIds'] ?? [];
 
         if (strlen($name) > 0) {
@@ -196,17 +142,9 @@ class NewsService
         return $news->getId();
     }
 
-    /**
-     * Удалить новость
-     * @param News $news
-     * @return void
-     */
     public function delete(
         News $news
     ): void {
-        /**
-         * @var string
-         */
         $rootDir = $this->parameterBag->get('kernel.project_dir');
 
         try {
@@ -219,11 +157,6 @@ class NewsService
         $this->em->flush();
     }
 
-    /**
-     * Загружаем превью
-     * @var int $newsId
-     * @return string
-     */
     private function uploadPreview(
         int $newsId,
         string $imagePath
@@ -235,21 +168,15 @@ class NewsService
             mkdir($rootDir . $pathToSave, 0777, true);
         }
 
-        $image = new \abeautifulsite\SimpleImage($imagePath);
+        $image = new SimpleImage($imagePath);
         $image
             ->resize(News::PREVIEW_WIDTH, News::PREVIEW_HEIGHT)
-            ->save($rootDir . $pathToSave . 'preview.jpg', 'image/jpg');
+            ->toFile($rootDir . $pathToSave . 'preview.jpg');
         unlink($imagePath);
 
         return $pathToSave . 'preview.jpg';
     }
 
-    /**
-     * Поставить лайк
-     * @param News $news
-     * @param User $user
-     * @return void
-     */
     public function setLike(
         News $news,
         User $user
@@ -267,12 +194,6 @@ class NewsService
         $this->em->flush();
     }
 
-    /**
-     * Удалить лайк
-     * @param News $news
-     * @param User $user
-     * @return void
-     */
     public function removeLike(
         News $news,
         User $user

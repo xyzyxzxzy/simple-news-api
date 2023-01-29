@@ -11,28 +11,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-/**
- * @Route("/admin/tag", name="tag")
- */
+#[Route(path: '/admin/tag', name: 'tag')]
 class TagController extends AbstractController
 {
-    /**
-     * Добавить тег
-     * @Route("/", name="create", methods={"POST"})
-     * @param Request $request,
-     * @param TagService $tagService
-     * @param TagValidator $tagValidator
-     * @return Response
-     */
+    #[Route(path: '/', name: 'create', methods: ['POST'])]
     public function create(
         Request $request,
         TagService $tagService,
         TagValidator $tagValidator
     ): Response
     {
-        /**
-         * @var array
-         */
         $content = json_decode($request->getContent(), true) ?? [];
         try {
             $tagValidator->validation($content);
@@ -47,15 +35,7 @@ class TagController extends AbstractController
         ], Response::HTTP_CREATED);
     }
 
-    /**
-     * Редактировать тег
-     * @Route("/{tag<\d+>}", name="update", methods={"PATCH"})
-     * @param Tag $tag,
-     * @param Request $request,
-     * @param TagService $tagService
-     * @param TagValidator $tagValidator
-     * @return Response
-     */
+    #[Route(path: '/{tag<\d+>}', name: 'update', methods: ['PATCH'])]
     public function update(
         ?Tag $tag,
         Request $request,
@@ -69,9 +49,6 @@ class TagController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        /**
-         * @var array
-         */
         $content = json_decode($request->getContent(), true) ?? [];
         try {
             $tagValidator->validation($content);
@@ -88,14 +65,8 @@ class TagController extends AbstractController
             )
         ], Response::HTTP_OK);
     }
-    
-    /**
-     * Удалить тег
-     * @Route("/{tag<\d+>}", name="delete", methods={"DELETE"})
-     * @param Tag $tag
-     * @param TagService $tagService
-     * @return Response
-     */
+
+    #[Route(path: '/{tag<\d+>}', name: 'delete', methods: ['DELETE'])]
     public function delete(
         ?Tag $tag,
         TagService $tagService
@@ -106,10 +77,9 @@ class TagController extends AbstractController
                 'message' => 'Тег не найден'
             ], Response::HTTP_BAD_REQUEST);
         }
-        
-        return $this->json(
-            $tagService->delete($tag),
-            Response::HTTP_NO_CONTENT
-        );
+
+        $tagService->delete($tag);
+
+        return $this->json('', Response::HTTP_NO_CONTENT);
     }
 }

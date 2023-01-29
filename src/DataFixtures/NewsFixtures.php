@@ -75,10 +75,6 @@ class NewsFixtures extends Fixture implements DependentFixtureInterface
         ],
     ];
 
-    /**
-     * Фикстуры новостей
-     * @return void 
-     */
     public function load(
         ObjectManager $manager
     ): void
@@ -110,11 +106,6 @@ class NewsFixtures extends Fixture implements DependentFixtureInterface
         $manager->flush();
     }
 
-    /**
-     * Загружаем превью
-     * @var int $newsId
-     * @return string
-     */
     private function uploadPreview(
         int $newsId
     ): string {

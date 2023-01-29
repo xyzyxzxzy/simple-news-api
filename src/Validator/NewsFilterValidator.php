@@ -6,11 +6,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class NewsFilterValidator extends AbstractDataRequestValidation
 {
-    /**
-     * Валидатор полей фильтра новости
-     * @param array $data
-     * @return void
-     */
     public function validation(array $data): void
     {
         $constraints = new Assert\Collection([

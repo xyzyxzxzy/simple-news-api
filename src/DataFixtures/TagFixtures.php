@@ -15,10 +15,6 @@ class TagFixtures extends Fixture
         4 => 'Россия'
     ];
 
-    /**
-     * Фикстуры тегов
-     * @return void
-     */
     public function load(ObjectManager $manager): void
     {
         foreach (self::TAGS as $tag) {
