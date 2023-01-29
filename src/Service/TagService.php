@@ -26,13 +26,7 @@ class TagService
         $this->tagNormalizer = $tagNormalizer;
         $this->utilsService = $utilsService;
     }
-    
-    /**
-     * Получить теги
-     * @param int $pg
-     * @param int $on
-     * @return array
-     */
+
     public function get(
         int $pg,
         int $on
@@ -42,17 +36,9 @@ class TagService
         }, $this->tagRepository->getTags($pg, $on));
     }
 
-    /**
-     * Добавить тег
-     * @param array $data
-     * @return int
-     */
     public function create(
         array $data
     ): int {
-        /**
-         * @var string
-         */
         $name = $this->utilsService->convertString($data['name']);
 
         $tag = new Tag;
@@ -64,18 +50,10 @@ class TagService
         return $tag->getId();
     }
 
-    /**
-     * Редактировать тег
-     * @param array $data
-     * @return int
-     */
     public function update(
         Tag $tag,
         array $data
     ): int {
-        /**
-         * @var string
-         */
         $name = $this->utilsService->convertString($data['name']);
 
         if (strlen($name) > 0) {
@@ -87,11 +65,6 @@ class TagService
         return $tag->getId();
     }
 
-    /**
-     * Удалить тег
-     * @param Tag $tag
-     * @return void
-     */
     public function delete(
         Tag $tag
     ): void {

@@ -7,12 +7,6 @@ use App\Validator\Constraint as CustomConstraint;
 
 class NewsValidator extends AbstractDataRequestValidation
 {
-    /**
-     * Валидатор полей новости
-     * @param array $data
-     * @param array $options
-     * @return void
-     */
     public function validation(array $data, array $options = array()): void
     {
         if (empty($options)) {

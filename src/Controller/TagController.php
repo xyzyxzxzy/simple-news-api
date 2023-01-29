@@ -12,28 +12,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-/**
- * @Route("/tag", name="tag")
- */
+#[Route(path: '/tag', name: 'tag')]
 class TagController extends AbstractController
 {
-    /**
-     * Получить теги
-     * @Route("/", name="list", methods={"GET"})
-     * @param Request $request,
-     * @param TagService $tagService
-     * @param TagFilterValidator $tagFilterValidator
-     * @return Response
-     */
+    #[Route(path: '/', name: 'list', methods: ['GET'])]
     public function list(
         Request $request,
         TagService $tagService,
         TagFilterValidator $tagFilterValidator
     ): Response
     {
-        /**
-         * @var array
-         */
         $content = json_decode($request->getContent(), true) ?? [];
         try {
             $tagFilterValidator->validation($content);
@@ -43,27 +31,15 @@ class TagController extends AbstractController
             ], $e->getCode());
         }
 
-        /**
-         * @var int
-         */
         $pg = $content['pg'] ?? $this->getParameter('app.pg');
-        /**
-         * @var int
-         */
         $on = $content['on'] ?? $this->getParameter('app.on');
 
         return $this->json([
             'list' => $tagService->get($pg, $on)
         ]);
     }
-    
-    /**
-     * Получить тег
-     * @Route("/{tag<\d+>}", name="item", methods={"GET"})
-     * @param Tag $tag
-     * @param TagService $tagService
-     * @return Response
-     */
+
+    #[Route(path: '/{tag<\d+>}', name: 'item', methods: ['GET'])]
     public function item(
         ?Tag $tag,
         TagNormalizer $tagNormalizer

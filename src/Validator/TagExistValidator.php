@@ -11,9 +11,6 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 class TagExistValidator extends ConstraintValidator
 {
-    /**
-     * @EntityManagerInterface $em
-     */
     private $em;
 
     public function __construct(
@@ -22,12 +19,6 @@ class TagExistValidator extends ConstraintValidator
         $this->em = $em;
     }
 
-    /**
-     * Валидация существования тегов
-     * @param array $data
-     * @param Constraint $constraint
-     * @return void
-     */
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof TagExist) {

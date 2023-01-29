@@ -6,18 +6,8 @@ use App\Entity\News;
 use App\Entity\User;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<News>
- *
- * @method News|null find($id, $lockMode = null, $lockVersion = null)
- * @method News|null findOneBy(array $criteria, array $orderBy = null)
- * @method News[]    findAll()
- * @method News[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
- */
 class NewsRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -25,10 +15,6 @@ class NewsRepository extends ServiceEntityRepository
         parent::__construct($registry, News::class);
     }
 
-    /**
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
     public function add(News $entity, bool $flush = true): void
     {
         $this->_em->persist($entity);
@@ -37,10 +23,6 @@ class NewsRepository extends ServiceEntityRepository
         }
     }
 
-    /**
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
     public function remove(News $entity, bool $flush = true): void
     {
         $this->_em->remove($entity);
@@ -49,15 +31,7 @@ class NewsRepository extends ServiceEntityRepository
         }
     }
 
-    /**
-     * Получить список новостей
-     * @param int $pg
-     * @param int $on
-     * @param string|null $dataFilter
-     * @param array $tagIds
-     * @return array
-     */
-    public function getNews(int $pg, int $on, string $dataFilter = null, array $tagIds): array
+    public function getNews(int $pg, int $on, array $tagIds, ?string $dataFilter): array
     {
         $query = $this->createQueryBuilder('n')
             ->setFirstResult($on * ($pg - 1))
@@ -80,13 +54,7 @@ class NewsRepository extends ServiceEntityRepository
 
         return $query->getQuery()->getResult();
     }
-    
-    /**
-     * Поставлен ли лайк пользователем для текущей новости
-     * @param News $news
-     * @param User $user
-     * @return News|null
-     */
+
     public function getLike(News $news, User $user)
     {
         $query = $this->createQueryBuilder('n')

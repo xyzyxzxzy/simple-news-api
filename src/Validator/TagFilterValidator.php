@@ -6,11 +6,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class TagFilterValidator extends AbstractDataRequestValidation
 {
-    /**
-     * Валидатор полей фильтра тегов
-     * @param array $data
-     * @return void
-     */
     public function validation(array $data)
     {
         $constraints = new Assert\Collection([

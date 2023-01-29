@@ -4,11 +4,6 @@ namespace App\Service;
 
 class UtilsService
 {
-    /**
-     * Преобразовать строку
-     * @param string $string
-     * @return string
-     */
     public function convertString(
         string $string
     ): string
@@ -16,12 +11,7 @@ class UtilsService
         return htmlspecialchars(trim($string));
     }
 
-    /**
-     * Удалить директорию и её содержимое
-     * @param string $dir
-     * @return void
-     */
-    public function recursiveRemoveDir($dir)
+    public function recursiveRemoveDir($dir): void
     {
         if (!file_exists($dir)) {
             return;
@@ -30,7 +20,8 @@ class UtilsService
         $includes = new \FilesystemIterator($dir);
         foreach ($includes as $include) {
             if (is_dir($include) && !is_link($include)) {
-                return $this->recursiveRemoveDir($include);
+                $this->recursiveRemoveDir($include);
+                return;
             }
 
             unlink($include);

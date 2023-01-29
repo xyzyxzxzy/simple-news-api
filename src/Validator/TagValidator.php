@@ -6,12 +6,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class TagValidator extends AbstractDataRequestValidation
 {
-    /**
-     * Валидатор полей тега
-     * @param array $data
-     * @param array $options
-     * @return void
-     */
     public function validation(array $data, array $options = array()): void
     {
         if (empty($options)) {

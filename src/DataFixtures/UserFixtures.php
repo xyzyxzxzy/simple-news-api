@@ -12,7 +12,7 @@ class UserFixtures extends Fixture
     const USERS_LIST = [
         array(
             'username' => "admin",
-            'roles' => ["ROLE_ADMIN"]
+            'roles' => User::ROLE_LIST
         ),
         array(
             'username' => "user",
@@ -29,10 +29,6 @@ class UserFixtures extends Fixture
         $this->passwordHasher = $passwordHasher;    
     }
 
-    /**
-     * Фикстуры пользователей
-     * @return void
-     */
     public function load(ObjectManager $manager): void
     {
         foreach (self::USERS_LIST as $user) {
