@@ -21,7 +21,7 @@ class StringToArrayOfIntegerValuesTransformer  implements DataTransformerInterfa
             return null;
         }
 
-        $value = explode(',', $value) ?? $value;
+        $value = explode(',', $value);
 
         return array_map(fn (string $item) => (int)$item, $value);
     }
