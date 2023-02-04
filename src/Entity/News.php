@@ -13,9 +13,9 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 #[ORM\Entity(repositoryClass: NewsRepository::class)]
 class News
 {
-    const PATH_TO_SAVE = '/uploads/news/';
-    const PREVIEW_WIDTH = 400;
-    const PREVIEW_HEIGHT = 400;
+    public const PATH_TO_SAVE = '/uploads/news/';
+    public const PREVIEW_WIDTH = 400;
+    public const PREVIEW_HEIGHT = 400;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -49,8 +49,8 @@ class News
     private User $author;
 
     #[ORM\JoinTable(name: 'news_user_likes')]
-    #[ORM\JoinColumn(unique: true, name: 'news_id', referencedColumnName: 'id')]
-    #[ORM\InverseJoinColumn(unique: true, name: 'user_id', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'news_id', referencedColumnName: 'id', unique: true)]
+    #[ORM\InverseJoinColumn(name: 'user_id', referencedColumnName: 'id', unique: true)]
     #[ORM\ManyToMany(targetEntity: User::class)]
     private Collection $likes;
 

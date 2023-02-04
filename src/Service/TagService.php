@@ -9,36 +9,22 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class TagService 
 {
-    private $em;
-    private $tagRepository;
-    private $tagNormalizer;
-    private $utilsService;
-
     public function __construct(
-        EntityManagerInterface $em,
-        TagRepository $tagRepository,
-        TagNormalizer $tagNormalizer,
-        UtilsService $utilsService
-    ) 
-    {
-        $this->em = $em;
-        $this->tagRepository = $tagRepository;
-        $this->tagNormalizer = $tagNormalizer;
-        $this->utilsService = $utilsService;
-    }
+        private readonly EntityManagerInterface $em,
+        private readonly TagRepository $tagRepository,
+        private readonly TagNormalizer $tagNormalizer,
+        private readonly UtilsService $utilsService,
+    ) {}
 
-    public function get(
-        int $pg,
-        int $on
-    ): array {
+    public function get(int $pg, int $on): array
+    {
         return array_map(function(Tag $tag) {
             return $this->tagNormalizer->normalize($tag);
         }, $this->tagRepository->getTags($pg, $on));
     }
 
-    public function create(
-        array $data
-    ): int {
+    public function create(array $data): int
+    {
         $name = $this->utilsService->convertString($data['name']);
 
         $tag = new Tag;
@@ -50,10 +36,8 @@ class TagService
         return $tag->getId();
     }
 
-    public function update(
-        Tag $tag,
-        array $data
-    ): int {
+    public function update(Tag $tag, array $data): int
+    {
         $name = $this->utilsService->convertString($data['name']);
 
         if (strlen($name) > 0) {
@@ -65,9 +49,8 @@ class TagService
         return $tag->getId();
     }
 
-    public function delete(
-        Tag $tag
-    ): void {
+    public function delete(Tag $tag): void
+    {
         $this->em->remove($tag);
         $this->em->flush();
     }

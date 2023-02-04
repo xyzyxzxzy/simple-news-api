@@ -21,6 +21,7 @@
         "symfony/debug-bundle": "6.2.*",
         "symfony/dotenv": "6.2.*",
         "symfony/flex": "*",
+        "symfony/form": "6.2.*",
         "symfony/framework-bundle": "6.2.*",
         "symfony/runtime": "*",
         "symfony/serializer": "6.2.*",
@@ -29,7 +30,8 @@
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^3.4",
-        "symfony/maker-bundle": "*"
+        "symfony/maker-bundle": "*",
+        "symfony/var-dumper": "6.2.*"
     },
     "config": {
         "allow-plugins": {
