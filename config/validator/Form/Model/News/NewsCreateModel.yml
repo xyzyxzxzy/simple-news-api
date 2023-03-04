@@ -1,0 +1,20 @@
+App\Form\Model\News\NewsCreateModel:
+  properties:
+    name:
+      - Type: { type: string }
+      - Length: { min: 4, max: 100 }
+    preview:
+      - NotBlank: ~
+      - Type: { type: string }
+      - File:
+          mimeTypes: [ image/jpeg, image/jpg, image/x-png ]
+          maxSize: '1M'
+    content:
+      - Type: { type: string }
+      - Length: { min: 50 }
+    tags:
+      - NotBlank: ~
+      - Type: { type: array }
+      - Unique: ~
+      - All:
+          - Type: { type: App\Entity\Tag }

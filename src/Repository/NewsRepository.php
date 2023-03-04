@@ -31,21 +31,22 @@ class NewsRepository extends ServiceEntityRepository
         }
     }
 
-    public function getNews(int $pg, int $on, array $tagIds, ?string $dataFilter): array
+    public function getNews(int $pg, int $on, ?array $tagIds, ?string $dataFilter): array
     {
         $query = $this->createQueryBuilder('n')
             ->setFirstResult($on * ($pg - 1))
             ->setMaxResults($on)
             ->orderBy('n.datePublication', 'ASC');
-        
+
         if ($dataFilter) {
             $dataFilter = new DateTime($dataFilter);
+
             $query
-                ->where("DATE_FORMAT(n.datePublication, '%m-%Y') = :dataFilter")
+                ->where("TO_CHAR(n.datePublication, 'mm-YYYY') = :dataFilter")
                 ->setParameter('dataFilter', $dataFilter->format('m-Y'));
         }
 
-        if (count($tagIds) > 0) {
+        if ($tagIds) {
             $query
                 ->innerJoin('n.tag', 't')
                 ->andWhere('t.id IN (:tagIds)')

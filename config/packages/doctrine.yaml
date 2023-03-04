@@ -17,8 +17,8 @@ doctrine:
                 alias: App
                 type: attribute
         dql:
-                datetime_functions:
-                    DATE_FORMAT: DoctrineExtensions\Query\Mysql\DateFormat
+            datetime_functions:
+                to_char: DoctrineExtensions\Query\Oracle\ToChar
 
 when@test:
     doctrine:

@@ -1,0 +1,24 @@
+App\Form\Model\News\NewsFilterModel:
+  properties:
+    on:
+      - NotBlank: ~
+      - Optional:
+        - Sequentially:
+          - Type: { type: integer }
+          - Positive: ~
+    pg:
+      - NotBlank: ~
+      - Optional:
+        - Sequentially:
+          - Type: { type: integer }
+          - Positive: ~
+    dateFilter:
+      - Optional:
+          - Type: { type: string }
+          - DateTime: { format: 'd-m-Y', message: 'Use d-m-Y format' }
+    tagIds:
+      - Type: { type: array }
+      - Unique: ~
+      - All:
+        - GreaterThan: 0
+        - Type: { type: integer }

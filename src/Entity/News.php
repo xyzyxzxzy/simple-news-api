@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Form\Model\News\NewsCreateModel;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\NewsRepository;
@@ -13,9 +14,9 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 #[ORM\Entity(repositoryClass: NewsRepository::class)]
 class News
 {
-    const PATH_TO_SAVE = '/uploads/news/';
-    const PREVIEW_WIDTH = 400;
-    const PREVIEW_HEIGHT = 400;
+    public const PATH_TO_SAVE = '/uploads/news/';
+    public const PREVIEW_WIDTH = 400;
+    public const PREVIEW_HEIGHT = 400;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -49,13 +50,17 @@ class News
     private User $author;
 
     #[ORM\JoinTable(name: 'news_user_likes')]
-    #[ORM\JoinColumn(unique: true, name: 'news_id', referencedColumnName: 'id')]
-    #[ORM\InverseJoinColumn(unique: true, name: 'user_id', referencedColumnName: 'id')]
+    #[ORM\JoinColumn(name: 'news_id', referencedColumnName: 'id', unique: true)]
+    #[ORM\InverseJoinColumn(name: 'user_id', referencedColumnName: 'id', unique: true)]
     #[ORM\ManyToMany(targetEntity: User::class)]
     private Collection $likes;
 
-    public function __construct()
+    public function __construct(NewsCreateModel $newsModel, User $user)
     {
+        $this->name = $newsModel->name;
+        $this->content = $newsModel->content;
+        $this->author = $user;
+        $this->datePublication = new DateTime();
         $this->dateCreation = new DateTime();
         $this->tag = new ArrayCollection();
         $this->likes = new ArrayCollection();
@@ -131,10 +136,18 @@ class News
         return $this->tag;
     }
 
-    public function addTag(Tag $tag): self
+    public function addTags(array $tags): self
     {
-        if (!$this->tag->contains($tag)) {
-            $this->tag[] = $tag;
+        foreach ($this->tag as $tag) {
+            if (!in_array($tag, $tags)) {
+                $this->removeTag($tag);
+            }
+        }
+
+        foreach ($tags as $tag) {
+            if (!$this->tag->contains($tag)) {
+                $this->tag[] = $tag;
+            }
         }
 
         return $this;

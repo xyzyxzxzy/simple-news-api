@@ -20,8 +20,3 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-    App\Validator\TagExistValidator:
-        tags: [{
-            name: validator.constraint_validator,
-            alias: tag.exist.validator
-        }]

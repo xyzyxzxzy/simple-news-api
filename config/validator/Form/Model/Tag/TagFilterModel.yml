@@ -1,0 +1,14 @@
+App\Form\Model\Tag\TagFilterModel:
+  properties:
+    on:
+      - NotBlank: ~
+      - Optional:
+        - Sequentially:
+          - Type: { type: integer }
+          - Positive: ~
+    pg:
+      - NotBlank: ~
+      - Optional:
+        - Sequentially:
+          - Type: { type: integer }
+          - Positive: ~
