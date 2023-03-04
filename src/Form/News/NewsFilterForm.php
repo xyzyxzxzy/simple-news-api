@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Form\Type;
+namespace App\Form\News;
 
+use App\Form\Common\MainFilterForm;
 use App\Form\DataTransformer\StringToArrayOfIntegerValuesTransformer;
-use App\Form\Model\NewsFilterModel;
+use App\Form\Model\News\NewsFilterModel;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class NewsFilterTypeForm extends MainFilterTypeForm
+class NewsFilterForm extends MainFilterForm
 {
     public function __construct(
         private readonly StringToArrayOfIntegerValuesTransformer $stringToArrayOfIntegerValuesTransformer,

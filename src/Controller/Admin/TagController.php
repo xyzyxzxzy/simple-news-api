@@ -2,10 +2,11 @@
 
 namespace App\Controller\Admin;
 
-use Exception;
 use App\Entity\Tag;
+use App\Form\Tag\TagUpdateForm;
 use App\Service\TagService;
-use App\Validator\TagValidator;
+use App\Form\Tag\TagCreateForm;
+use App\Service\FormErrorsHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,34 +15,33 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route(path: '/admin/tag', name: 'tag')]
 class TagController extends AbstractController
 {
+    public function __construct(
+        private readonly FormErrorsHelper $formErrorsHelper,
+        private readonly TagService $tagService,
+    ) {}
+
     #[Route(path: '/', name: 'create', methods: ['POST'])]
-    public function create(
-        Request $request,
-        TagService $tagService,
-        TagValidator $tagValidator
-    ): Response
+    public function create(Request $request): Response
     {
-        $content = json_decode($request->getContent(), true) ?? [];
-        try {
-            $tagValidator->validation($content);
-        } catch(Exception $e) {
-            return $this->json([
-                "error" => unserialize($e->getMessage())
-            ], $e->getCode());
+        $form = $this->createForm(TagCreateForm::class, options: ['method' => $request->getMethod()])
+            ->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            if (!$form->isValid()) {
+                return $this->json(
+                    ['errors' => $this->formErrorsHelper->prepareErrors($form)],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
         }
 
-        return $this->json([
-            'id' => $tagService->create($content)
-        ], Response::HTTP_CREATED);
+        $data = $form->getData();
+
+        return $this->json(['id' => $this->tagService->create($data)], Response::HTTP_CREATED);
     }
 
     #[Route(path: '/{tag<\d+>}', name: 'update', methods: ['PATCH'])]
-    public function update(
-        ?Tag $tag,
-        Request $request,
-        TagService $tagService,
-        TagValidator $tagValidator
-    ): Response
+    public function update(?Tag $tag, Request $request): Response
     {
         if (!$tag) {
             return $this->json([
@@ -49,28 +49,25 @@ class TagController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $content = json_decode($request->getContent(), true) ?? [];
-        try {
-            $tagValidator->validation($content);
-        } catch(Exception $e) {
-            return $this->json([
-                "error" => unserialize($e->getMessage())
-            ], $e->getCode());
+        $form = $this->createForm(TagUpdateForm::class, options: ['method' => $request->getMethod()])
+            ->handleRequest($request);
+
+        if ($form->isSubmitted()) {
+            if (!$form->isValid()) {
+                return $this->json(
+                    ['errors' => $this->formErrorsHelper->prepareErrors($form)],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
         }
 
-        return $this->json([
-            'id' => $tagService->update(
-                $tag,
-                $content
-            )
-        ], Response::HTTP_OK);
+        $data = $form->getData();
+
+        return $this->json(['id' => $this->tagService->update($tag, $data)], Response::HTTP_OK);
     }
 
     #[Route(path: '/{tag<\d+>}', name: 'delete', methods: ['DELETE'])]
-    public function delete(
-        ?Tag $tag,
-        TagService $tagService
-    ): Response
+    public function delete(?Tag $tag,): Response
     {
         if (!$tag) {
             return $this->json([
@@ -78,7 +75,7 @@ class TagController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $tagService->delete($tag);
+        $this->tagService->delete($tag);
 
         return $this->json('', Response::HTTP_NO_CONTENT);
     }

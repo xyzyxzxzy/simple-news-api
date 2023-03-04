@@ -3,6 +3,8 @@
 namespace App\Service;
 
 use App\Entity\Tag;
+use App\Form\Model\Tag\TagCreateModel;
+use App\Form\Model\Tag\TagUpdateModel;
 use App\Repository\TagRepository;
 use App\Serializer\Normalizer\TagNormalizer;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,7 +15,6 @@ class TagService
         private readonly EntityManagerInterface $em,
         private readonly TagRepository $tagRepository,
         private readonly TagNormalizer $tagNormalizer,
-        private readonly UtilsService $utilsService,
     ) {}
 
     public function get(int $pg, int $on): array
@@ -23,12 +24,9 @@ class TagService
         }, $this->tagRepository->getTags($pg, $on));
     }
 
-    public function create(array $data): int
+    public function create(TagCreateModel $data): int
     {
-        $name = $this->utilsService->convertString($data['name']);
-
-        $tag = new Tag;
-        $tag->setName($name);
+        $tag = new Tag($data->name);
 
         $this->em->persist($tag);
         $this->em->flush();
@@ -36,12 +34,10 @@ class TagService
         return $tag->getId();
     }
 
-    public function update(Tag $tag, array $data): int
+    public function update(Tag $tag, TagUpdateModel $data): int
     {
-        $name = $this->utilsService->convertString($data['name']);
-
-        if (strlen($name) > 0) {
-            $tag->setName($name);
+        if ($data->name) {
+            $tag->setName($data->name);
         }
 
         $this->em->flush();

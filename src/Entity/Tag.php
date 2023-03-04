@@ -22,8 +22,9 @@ class Tag
     #[ORM\ManyToMany(targetEntity: News::class, mappedBy: 'tag')]
     private Collection $news;
 
-    public function __construct()
+    public function __construct(string $name)
     {
+        $this->name = $name;
         $this->news = new ArrayCollection();
     }
 
@@ -53,7 +54,7 @@ class Tag
     {
         if (!$this->news->contains($news)) {
             $this->news[] = $news;
-            $news->addTag($this);
+            $news->addTags([$this]);
         }
 
         return $this;

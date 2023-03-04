@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Form\Model\News\NewsCreateModel;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\NewsRepository;
@@ -54,8 +55,12 @@ class News
     #[ORM\ManyToMany(targetEntity: User::class)]
     private Collection $likes;
 
-    public function __construct()
+    public function __construct(NewsCreateModel $newsModel, User $user)
     {
+        $this->name = $newsModel->name;
+        $this->content = $newsModel->content;
+        $this->author = $user;
+        $this->datePublication = new DateTime();
         $this->dateCreation = new DateTime();
         $this->tag = new ArrayCollection();
         $this->likes = new ArrayCollection();
@@ -131,10 +136,18 @@ class News
         return $this->tag;
     }
 
-    public function addTag(Tag $tag): self
+    public function addTags(array $tags): self
     {
-        if (!$this->tag->contains($tag)) {
-            $this->tag[] = $tag;
+        foreach ($this->tag as $tag) {
+            if (!in_array($tag, $tags)) {
+                $this->removeTag($tag);
+            }
+        }
+
+        foreach ($tags as $tag) {
+            if (!$this->tag->contains($tag)) {
+                $this->tag[] = $tag;
+            }
         }
 
         return $this;

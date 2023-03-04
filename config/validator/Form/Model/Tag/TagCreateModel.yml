@@ -1,0 +1,5 @@
+App\Form\Model\Tag\TagCreateModel:
+  properties:
+    name:
+      - Type: { type: string }
+      - Length: { min: 2, max: 20 }

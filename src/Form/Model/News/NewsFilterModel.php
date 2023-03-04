@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form\Model;
+namespace App\Form\Model\News;
 
 class NewsFilterModel
 {

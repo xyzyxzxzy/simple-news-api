@@ -1,0 +1,24 @@
+App\Form\Model\News\NewsUpdateModel:
+  properties:
+    name:
+      - Optional:
+        - Type: { type: string }
+        - Length: { min: 4, max: 100 }
+    preview:
+      - Optional:
+        - NotBlank: ~
+        - Type: { type: string }
+        - File:
+            mimeTypes: [ image/jpeg, image/jpg, image/x-png ]
+            maxSize: '1M'
+    content:
+      - Optional:
+        - Type: { type: string }
+        - Length: { min: 50 }
+    tags:
+      - Optional:
+        - NotBlank: ~
+        - Type: { type: array }
+        - Unique: ~
+        - All:
+          - Type: { type: App\Entity\Tag }

@@ -2,28 +2,30 @@
 
 namespace App\Controller;
 
-use App\Form\Model\TagFilterModel;
-use App\Form\Type\MainFilterTypeForm;
-use App\Service\FormErrorsHelper;
 use App\Entity\Tag;
-use App\Service\TagService;
+use App\Form\Common\MainFilterForm;
+use App\Form\Model\Tag\TagFilterModel;
 use App\Serializer\Normalizer\TagNormalizer;
+use App\Service\FormErrorsHelper;
+use App\Service\TagService;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route(path: '/tag', name: 'tag')]
 class TagController extends AbstractController
 {
     public function __construct(
+        private readonly TagService $tagService,
+        private readonly TagNormalizer $tagNormalizer,
         private readonly FormErrorsHelper $formErrorsHelper,
     ) {}
 
     #[Route(path: '/', name: 'list', methods: ['GET'])]
-    public function list(Request $request, TagService $tagService): Response
+    public function list(Request $request): Response
     {
-        $form = $this->createForm(MainFilterTypeForm::class, new TagFilterModel(), options: ['method' => $request->getMethod()])
+        $form = $this->createForm(MainFilterForm::class, new TagFilterModel(), options: ['method' => $request->getMethod()])
             ->handleRequest($request);
 
         if ($form->isSubmitted()) {
@@ -37,16 +39,16 @@ class TagController extends AbstractController
 
         $data = $form->getData();
 
-        return $this->json(['list' => $tagService->get($data->pg, $data->on)]);
+        return $this->json(['list' => $this->tagService->get($data->pg, $data->on)]);
     }
 
     #[Route(path: '/{tag<\d+>}', name: 'item', requirements: ['tag' => '\d'], methods: ['GET'])]
-    public function item(?Tag $tag, TagNormalizer $tagNormalizer): Response
+    public function item(?Tag $tag): Response
     {
         if (!$tag) {
             return $this->json(['message' => 'Tag not found'], Response::HTTP_BAD_REQUEST);
         }
 
-        return $this->json($tagNormalizer->normalize($tag));
+        return $this->json($this->tagNormalizer->normalize($tag));
     }
 }

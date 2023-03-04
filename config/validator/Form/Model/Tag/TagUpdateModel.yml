@@ -1,0 +1,6 @@
+App\Form\Model\Tag\TagUpdateModel:
+  properties:
+    name:
+      - Optional:
+        - Type: { type: string }
+        - Length: { min: 2, max: 20 }

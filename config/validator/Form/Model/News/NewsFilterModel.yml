@@ -1,4 +1,4 @@
-App\Form\Model\NewsFilterModel:
+App\Form\Model\News\NewsFilterModel:
   properties:
     on:
       - NotBlank: ~
