@@ -43,11 +43,6 @@ class FormErrorsHelper
             unset($allErrors['fields']);
         }
 
-        if (isset($allErrors['customer']['fields'])) {
-            $fieldErrors = $allErrors['customer']['fields'];
-            unset($allErrors['customer']);
-        }
-
         foreach ($fieldErrors as $fieldId => $errors) {
             $fieldsErrors[$fieldId] = isset($fieldsErrors[$fieldId]) ?
                 array_merge($fieldErrors[$fieldId], $errors) :
